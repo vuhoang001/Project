@@ -124,7 +124,7 @@ class AccessService {
     const email = user.email;
     const keyStore = await KeyTokenService.findById(userId);
     if (!keyStore) throw new AuthFailureError("Cant find UID");
-
+    
     if (keyStore.refreshTokenUsed.includes(refreshToken)) {
       await KeyTokenService.removeTokenByUserId(userId);
       throw new ForbiddenError("Something went wrong! Please relogin");

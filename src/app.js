@@ -5,6 +5,7 @@ const morgan = require("morgan");
 const helmet = require("helmet");
 const compression = require("compression");
 const cors = require("cors");
+const { setupSwagger } = require("./config/swagger");
 
 app.use(morgan("dev"));
 app.use(helmet());
@@ -15,6 +16,9 @@ app.use(
     extended: true,
   })
 );
+
+//Set up swagger
+setupSwagger(app);
 
 app.use(
   cors({

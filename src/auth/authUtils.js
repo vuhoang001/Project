@@ -28,27 +28,29 @@ const createTokensPair = async (payload, publicKey, privateKey) => {
 };
 
 const authentication = AsyncHandle(async (req, res, next) => {
-  const userId = req.headers[HEADER.CLIENT_ID];
+  const bearer = req.headers[HEADER.AUTHORIZATION];
   const refreshToken = req.headers[HEADER.REFRESHTOKEN];
-  const authHeader = req.headers["authorization"].split(" ")[1];
+  let accessToken;
+  if (bearer) accessToken = bearer.split(" ")[1];
+  if (refreshToken) {
+    const decodeUser = jwt.verify(refreshToken, process.env.REFRESH_SECRET);
+    const holderAccount = await getUserById(decodeUser.UserId);
+    if (!holderAccount)
+      throw new AuthFailureError("Error: Invalid refresh token !");
 
-  const keys = await keyTokenModel.findOne({
-    user: userId,
-  });
-
-  if (authHeader) {
-    const decodeUser = jwt.verify(authHeader, keys.publicKey);
-    if (decodeUser.UserId !== userId)
-      throw new AuthFailureError("Invalid accessToken");
-    req.user = decodeUser;
+    req.user = holderAccount;
+    req.refreshToken = refreshToken;
   }
 
-  if (refreshToken) {
-    const decodeRT = jwt.verify(refreshToken, keys.privateKey);
-    if (decodeRT.UserId !== userId)
-      throw new AuthFailureError("Invalid refreshToken");
-    req.refreshToken = refreshToken;
-    console.log("refreshToken", refreshToken);
+  if (accessToken) {
+    try {
+      const decodeUser = jwt.verify(accessToken, process.env.ACCESS_SECRET);
+      const account = await getUserById(decodeUser.UserId);
+      if (!account) throw new AuthFailureError("Error: Invalid access token!");
+      req.user = account;
+    } catch (err) {
+      console.log(err);
+    }
   }
   next();
 });
