@@ -33,10 +33,18 @@ const cleanObject = (obj) => {
 
   return obj;
 };
+
+const pagination = (page, limit) => {
+  const pageNumber = parseInt(page);
+  const limitNumber = parseInt(limit);
+  const skip = (pageNumber - 1) * limitNumber;
+  return { pageNumber, limitNumber, skip };
+};
 module.exports = {
   getInfoData,
   getSelectData,
   getUnSelectData,
   cleanObject,
   convertToObjectIdMongose,
+  pagination,
 };

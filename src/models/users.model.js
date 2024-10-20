@@ -19,6 +19,9 @@ const UserSchema = new Schema(
       type: String,
       required: true,
     },
+    address: {
+      type: String,
+    },
     status: {
       type: String,
       enum: ["active", "inactive"],

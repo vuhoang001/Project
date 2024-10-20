@@ -20,12 +20,7 @@ app.use(
 //Set up swagger
 setupSwagger(app);
 
-app.use(
-  cors({
-    origin: ["http://localhost:3000"],
-    credentials: true,
-  })
-);
+app.use(cors());
 
 require("./database/init.mongodb");
 app.use("/v1/api", require("./routers/index"));

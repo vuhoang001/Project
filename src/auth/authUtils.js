@@ -28,29 +28,32 @@ const createTokensPair = async (payload, publicKey, privateKey) => {
 };
 
 const authentication = AsyncHandle(async (req, res, next) => {
-  const bearer = req.headers[HEADER.AUTHORIZATION];
+  const Bearer = req.headers[HEADER.AUTHORIZATION];
   const refreshToken = req.headers[HEADER.REFRESHTOKEN];
   let accessToken;
-  if (bearer) accessToken = bearer.split(" ")[1];
-  if (refreshToken) {
-    const decodeUser = jwt.verify(refreshToken, process.env.REFRESH_SECRET);
-    const holderAccount = await getUserById(decodeUser.UserId);
-    if (!holderAccount)
-      throw new AuthFailureError("Error: Invalid refresh token !");
+  if (Bearer) accessToken = Bearer.split(" ")[1];
 
-    req.user = holderAccount;
+  if (!refreshToken && !accessToken)
+    throw new AuthFailureError("Invalid token");
+  if (refreshToken) {
+    const decodedUser = jwt.verify(
+      refreshToken,
+      process.env.REFRESH_TOKEN_SECRET
+    );
+    const holderAccount = await getAccountById(decodedUser.UserId);
+    if (!holderAccount) throw new AuthFailureError("Invalid refresh token!");
+    req.user = decodedUser;
     req.refreshToken = refreshToken;
   }
 
   if (accessToken) {
-    try {
-      const decodeUser = jwt.verify(accessToken, process.env.ACCESS_SECRET);
-      const account = await getUserById(decodeUser.UserId);
-      if (!account) throw new AuthFailureError("Error: Invalid access token!");
-      req.user = account;
-    } catch (err) {
-      console.log(err);
-    }
+    const decodedUser = jwt.verify(
+      accessToken,
+      process.env.ACCESS_TOKEN_SECRET
+    );
+    const holderAccount = await getAccountById(decodedUser.UserId);
+    if (!holderAccount) throw new AuthFailureError("Invalid access token!");
+    req.user = decodedUser;
   }
   next();
 });
