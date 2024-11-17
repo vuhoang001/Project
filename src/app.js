@@ -6,9 +6,11 @@ const helmet = require("helmet");
 const compression = require("compression");
 const cors = require("cors");
 const { setupSwagger } = require("./config/swagger");
+const path = require("path");
 
+app.use(cors());
 app.use(morgan("dev"));
-app.use(helmet());
+app.use(helmet(helmet.crossOriginResourcePolicy({policy: "cross-origin"})))
 app.use(compression());
 app.use(express.json());
 app.use(
@@ -20,7 +22,7 @@ app.use(
 //Set up swagger
 setupSwagger(app);
 
-app.use(cors());
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 require("./database/init.mongodb");
 app.use("/v1/api", require("./routers/index"));

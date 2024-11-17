@@ -12,9 +12,10 @@ class BookController {
 
   GetAllBook = async (req, res, next) => {
     const { page = 1, limit = 10 } = req.query;
+    const { keySearch } = req.query;
     new SuccessResponse({
       message: "Get all books",
-      metadata: await bookService.GetAllBook(page, limit),
+      metadata: await bookService.GetAllBook(page, limit, keySearch),
     }).send(res);
   };
 
@@ -37,6 +38,7 @@ class BookController {
   Edit = async (req, res, next) => {
     const slug = req.params.slug;
     const { files } = req;
+    console.log(slug);
     new SuccessResponse({
       message: "Edit book",
       metadta: await bookService.EditBook(slug, req.body, files),

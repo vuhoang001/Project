@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const genreController = require("../controller/genre.controller");
 const AsyncHandle = require("../helpers/AsyncHandle");
-const { authentication } = require("../auth/authUtils");
+// const { authentication } = require("../auth/authUtils");
 
 // router.use(authentication);
 

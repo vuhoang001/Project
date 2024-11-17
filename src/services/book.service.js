@@ -1,13 +1,12 @@
 const { BadRequestError } = require("../core/error.response");
 const bookModel = require("../models/book.model");
 const { uploadImageFromLocalFiles } = require("../helpers/cloudinary");
-const { pagination } = require("../utils/index");
+const { pagination, convertUrlBook } = require("../utils/index");
 
 class BookService {
   CreateBook = async (payload, files) => {
-    const image = await uploadImageFromLocalFiles(files);
-    if (image) {
-      payload.imageBook = image[0].thumb_url;
+    if (files) {
+      payload.imageBook = convertUrlBook(files[0].filename);
     }
     const data = await bookModel.create(payload);
     if (!data) throw new BadRequestError("Cant create book");
@@ -15,10 +14,25 @@ class BookService {
     return data;
   };
 
-  GetAllBook = async (page, limit) => {
+  GetAllBook = async (page, limit, keyword) => {
     const { limitNumber, skip } = pagination(page, limit);
-    const data = await bookModel.find({}).limit(limitNumber).skip(skip);
-    if (!data) throw new BadRequestError("Cant get all book");
+    const query = keyword
+      ? {
+          $or: [
+            { bookName: { $regex: keyword, $options: "i" } },
+            { bookDescription: { $regex: keyword, $options: "i" } },
+            { summary: { $regex: keyword, $options: "i" } },
+          ],
+        }
+      : {};
+    const data = await bookModel
+      .find(query)
+      .populate("authorBook")
+      .populate("genre")
+      .limit(limitNumber)
+      .skip(skip);
+    if (!data || data.length === 0)
+      throw new BadRequestError("Can't get all books");
     return data;
   };
 
@@ -28,13 +42,13 @@ class BookService {
     return data;
   };
 
-  EditBook = async (slug, payload, files) => {
+  EditBook = async (slug, payload, files = null) => {
+    console.log(payload);
     if (!slug) throw new BadRequestError("Cant edit book");
     const holderBook = await bookModel.findOne({ slug: slug });
     if (!holderBook) throw new BadRequestError("Cant edit book");
-    const image = await uploadImageFromLocalFiles(files);
-    if (image) {
-      payload.imageBook = image[0].thumb_url;
+    if (files && files.length > 0) {
+      payload.imageBook = convertUrlBook(files[0].filename);
     }
     Object.assign(holderBook, payload);
     const data = await holderBook.save();

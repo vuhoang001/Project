@@ -1,6 +1,8 @@
 const _ = require("lodash");
 const { Types } = require("mongoose");
 
+const URL_IMG = `${process.env.URL_SERVER}/uploads`;
+
 const getInfoData = ({ fields = [], object = {} }) => {
   return _.pick(object, fields);
 };
@@ -40,9 +42,15 @@ const pagination = (page, limit) => {
   const skip = (pageNumber - 1) * limitNumber;
   return { pageNumber, limitNumber, skip };
 };
+
+const convertUrlBook = (link) => {
+  const url = `${URL_IMG}/${link}`;
+  return url;
+};
 module.exports = {
   getInfoData,
   getSelectData,
+  convertUrlBook,
   getUnSelectData,
   cleanObject,
   convertToObjectIdMongose,

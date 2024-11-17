@@ -23,9 +23,11 @@ const BookSchema = new Schema(
     },
     bookDescription: {
       type: String,
+      default: "",
     },
     summary: {
       type: String,
+      default: "",
     },
     quantity: {
       type: Number,
@@ -34,7 +36,6 @@ const BookSchema = new Schema(
     },
     price: {
       type: Number,
-      required: true,
       default: 0,
     },
     totalPages: {
@@ -43,9 +44,11 @@ const BookSchema = new Schema(
     },
     releaseTime: {
       type: Date,
+      default: Date.now,
     },
     size: {
       type: String,
+      default: "36x36",
     },
     rating: {
       type: Number,

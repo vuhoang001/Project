@@ -4,12 +4,15 @@ const { pagination } = require("../utils/index");
 
 class GenreService {
   CreateGenre = async (payload) => {
-    const data = await genreModel.create(payload);
+    const data = await genreModel.create({
+      genreName: payload.genreName,
+      genreDescription: payload.genreDescription,
+    });
     if (!data) throw new BadRequestError("Can create genre");
     return data;
   };
 
-  GetAllGenres = async (page, limit) => {
+  GetAllGenres = async (page = 1, limit = 100) => {
     const { limitNumber, skip } = pagination(page, limit);
     const data = genreModel.find().skip(skip).limit(limitNumber);
     if (!data) throw new BadRequestError("Cant get all genre");

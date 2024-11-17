@@ -34,7 +34,7 @@ const authentication = AsyncHandle(async (req, res, next) => {
   if (Bearer) accessToken = Bearer.split(" ")[1];
 
   if (!refreshToken && !accessToken)
-    throw new AuthFailureError("Invalid token");
+    throw new AuthFailureError("Invalid tokenn");
   if (refreshToken) {
     const decodedUser = jwt.verify(
       refreshToken,

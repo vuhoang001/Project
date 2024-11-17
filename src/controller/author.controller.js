@@ -18,7 +18,10 @@ class AuthorController {
   };
 
   GetAllAuthors = async (req, res, next) => {
-    const { page = 1, limit = 10 } = req.query;
+    const { page = 1, limit = 100 } = req.query;
+    console.log(123);
+    console.log("page", page);
+    console.log("limit", limit);
     new SuccessResponse({
       message: "Get all authors",
       metadata: await authorService.GetAllAuthors(page, limit),
@@ -28,6 +31,7 @@ class AuthorController {
   EditAuthor = async (req, res, next) => {
     const { files } = req;
     const slug = req.params.slug;
+    console.log(slug);
     new SuccessResponse({
       message: "Edit author success",
       metadata: await authorService.EditAuthor(slug, req.body, files),

@@ -118,8 +118,6 @@ class AccessService {
   };
 
   static refreshTokenHandle = async (user, refreshToken) => {
-    console.log("refreshToken", refreshToken);
-    console.log("user", user);
     const userId = user.UserId;
     const email = user.email;
     const keyStore = await KeyTokenService.findById(userId);

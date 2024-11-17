@@ -1,15 +1,13 @@
 const authorModel = require("../models/author.model");
 const { BadRequestError } = require("../core/error.response");
-const { pagination } = require("../utils/index");
+const { pagination, convertUrlBook } = require("../utils/index");
 const { uploadImageFromLocalFiles } = require("../helpers/cloudinary");
 
 class AuthorService {
   CreateAuthor = async (payload, files) => {
     const { authorName, bio } = payload;
-    const image = await uploadImageFromLocalFiles(files);
-    console.log(image);
-    if (image) {
-      payload.authorImage = image[0].thumb_url;
+    if (files) {
+      payload.authorImage = convertUrlBook(files[0].filename);
     }
     const data = await authorModel.create({
       authorName: authorName,
@@ -18,7 +16,6 @@ class AuthorService {
     });
 
     if (!data) throw new BadRequestError("Cant create author");
-
     return data;
   };
 
@@ -31,20 +28,18 @@ class AuthorService {
 
   GetAllAuthors = async (page, limit) => {
     const { limitNumber, skip } = pagination(page, limit);
-    console.log(limitNumber, skip);
     const data = await authorModel.find().skip(skip).limit(limitNumber);
     if (!data) throw new BadRequestError("Can get all authors");
     return data;
   };
 
-  EditAuthor = async (slug, payload, files) => {
+  EditAuthor = async (slug, payload, files = null) => {
     if (!slug) throw new BadRequestError("Cant edit author");
     const holderAuthor = await authorModel.findOne({ slug: slug });
     if (!holderAuthor) throw new BadRequestError("Cant edit author 2");
 
-    const image = await uploadImageFromLocalFiles(files);
-    if (image) {
-      payload.authorImage = image[0].thumb_url;
+    if (files && files.length > 0) {
+      payload.authorImage = convertUrlBook(files[0].filename);
     }
 
     Object.assign(holderAuthor, payload);
@@ -64,12 +59,6 @@ class AuthorService {
     const data = await authorModel.deleteOne({ _id: holderAuthor._id });
     if (data.deletedCount == 0) throw new BadRequestError("Cant delete 3");
     return data;
-  };
-
-  Upload = async (files) => {
-    const res = await uploadImageFromLocalFiles(files);
-    console.log(res.thumb_url);
-    return res;
   };
 }
 
