@@ -10,7 +10,7 @@ const path = require("path");
 
 app.use(cors());
 app.use(morgan("dev"));
-app.use(helmet(helmet.crossOriginResourcePolicy({policy: "cross-origin"})))
+app.use(helmet(helmet.crossOriginResourcePolicy({ policy: "cross-origin" })));
 app.use(compression());
 app.use(express.json());
 app.use(

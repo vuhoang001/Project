@@ -28,6 +28,7 @@ class AuthorService {
 
   GetAllAuthors = async (page, limit) => {
     const { limitNumber, skip } = pagination(page, limit);
+    console.log(page, limit);
     const data = await authorModel.find().skip(skip).limit(limitNumber);
     if (!data) throw new BadRequestError("Can get all authors");
     return data;

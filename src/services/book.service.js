@@ -37,7 +37,7 @@ class BookService {
   };
 
   GetBook = async (slug) => {
-    const data = await bookModel.findOne({ slug: slug });
+    const data = await bookModel.findOne({ slug: slug }).populate("authorBook");
     if (!data) throw new BadRequestError("Cant get book");
     return data;
   };

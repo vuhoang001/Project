@@ -2,8 +2,8 @@ const AsyncHandle = require("../helpers/AsyncHandle");
 const BookController = require("../controller/book.controller");
 const express = require("express");
 const router = express.Router();
-const { authentication } = require("../auth/authUtils");
 const { uploadDisk } = require("../config/multer.config");
+const {} = require("../middlewares/resizeImage");
 
 // router.use(authentication)
 router.post(
