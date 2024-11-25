@@ -1,11 +1,24 @@
 const addressModel = require("../models/address.model");
+const axios = require("axios");
 
 class AddressService {
-  GetAddress = async (code) => {
-    const res = code
-      ? await addressModel.find({ Code: code })
-      : await addressModel.find({});
-    return res;
+  GetCites = async () => {
+    const response = await axios.get("https://vapi.vnappmob.com/api/province");
+    return response.data.results;
+  };
+
+  GetDistrict = async (code) => {
+    const response = await axios.get(
+      `https://vapi.vnappmob.com/api/province/district/${code}`
+    );
+    return response.data.results;
+  };
+
+  GetWard = async (code) => {
+    const response = await axios.get(
+      `https://vapi.vnappmob.com/api/province/ward/${code}`
+    );
+    return response.data.results;
   };
 }
 

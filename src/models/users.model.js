@@ -8,6 +8,7 @@ const UserSchema = new Schema(
     name: {
       type: String,
       trim: true,
+      default: "",
       maxLength: 150,
     },
     email: {
@@ -18,6 +19,14 @@ const UserSchema = new Schema(
     password: {
       type: String,
       required: true,
+    },
+    phone: {
+      type: String,
+      default: "",
+    },
+    thumbnail: {
+      type: String,
+      default: "",
     },
     address: {
       type: String,
@@ -32,8 +41,9 @@ const UserSchema = new Schema(
       default: false,
     },
     roles: {
-      type: Array,
-      default: [],
+      type: String,
+      enum: ["A", "C"],
+      default: "C",
     },
   },
   {

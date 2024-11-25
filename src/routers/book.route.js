@@ -3,9 +3,9 @@ const BookController = require("../controller/book.controller");
 const express = require("express");
 const router = express.Router();
 const { uploadDisk } = require("../config/multer.config");
-const {} = require("../middlewares/resizeImage");
+const { authentication } = require("../auth/authUtils");
 
-// router.use(authentication)
+// router.use(authentication);
 router.post(
   "/",
   uploadDisk.array("files", 1),

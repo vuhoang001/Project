@@ -7,9 +7,15 @@ const qs = require("qs");
 
 const PaymentController = require("../controller/payment.controller");
 const AsyncHandle = require("../helpers/AsyncHandle");
-
-router.post("/", AsyncHandle(PaymentController.payment));
-
+const { authentication } = require("../auth/authUtils");
+const config = {
+  app_id: process.env.ZALOPAY_APP_ID,
+  key1: process.env.ZALOPAY_KEY_1,
+  key2: process.env.ZALOPAY_KEY_2,
+  endpoint:
+    process.env.ZALOPAY_ENDPOINT_CREATE ||
+    "https://sb-openapi.zalopay.vn/v2/create",
+};
 router.post("/callback", AsyncHandle(PaymentController.paymentCallBack));
 
 router.post("/status-order", async (req, res) => {
@@ -55,4 +61,7 @@ router.post("/status-order", async (req, res) => {
     console.log(error);
   }
 });
+router.use(authentication);
+router.post("/", AsyncHandle(PaymentController.payment));
+
 module.exports = router;

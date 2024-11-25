@@ -4,10 +4,10 @@ const { Types } = require("mongoose");
 const { BadRequestError } = require("../core/error.response");
 
 class KeyTokenService {
-  static createKeys = async ({ user, publicKey, privateKey, refreshToken }) => {
+  static createKeys = async ({ user, refreshToken }) => {
     const keys = await keyTokenModel.findOneAndUpdate(
       { user: user._id },
-      { publicKey, privateKey, refreshToken },
+      { refreshToken },
       { new: true, upsert: true }
     );
     if (!keys) throw new BadRequestError("Error: Cant create or update keys");

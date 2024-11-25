@@ -20,6 +20,7 @@ const CartSchema = new Schema(
   },
   {
     collection: COLLECTION_NAME,
+    timestamps: true,
   }
 );
 

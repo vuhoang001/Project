@@ -10,6 +10,7 @@ router.get("/handleOTP", AsyncHandle(AccessController.handleOTP));
 router.post("/passwordReset", AsyncHandle(AccessController.resetPassword));
 
 router.use(authentication);
+router.get("/getme", AsyncHandle(AccessController.getMe));
 
 router.post("/refreshToken", AsyncHandle(AccessController.refreshTokenHandle));
 router.post("/logout", AsyncHandle(AccessController.logOut));

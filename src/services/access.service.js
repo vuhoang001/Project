@@ -32,37 +32,37 @@ class AccessService {
         "Error: Something went wrong! Cant create account!"
       );
 
-    const publicKey = crypto.randomBytes(64).toString("hex");
-    const privateKey = crypto.randomBytes(64).toString("hex");
+    // const publicKey = crypto.randomBytes(64).toString("hex");
+    // const privateKey = crypto.randomBytes(64).toString("hex");
 
-    const keys = await KeyTokenService.createKeys({
-      user: newUser,
-      publicKey,
-      privateKey,
-    });
+    // const keys = await KeyTokenService.createKeys({
+    //   user: newUser,
+    //   publicKey,
+    //   privateKey,
+    // });
 
-    if (!keys)
-      throw new BadRequestError(
-        "Error: Something went wrong! Cant create keys!"
-      );
+    // if (!keys)
+    //   throw new BadRequestError(
+    //     "Error: Something went wrong! Cant create keys!"
+    //   );
 
-    const tokens = await createTokensPair(
-      {
-        userId: newUser._id,
-        email: newUser.email,
-      },
-      publicKey,
-      privateKey
-    );
+    // const tokens = await createTokensPair(
+    //   {
+    //     userId: newUser._id,
+    //     email: newUser.email,
+    //   },
+    //   publicKey,
+    //   privateKey
+    // );
 
     return {
       code: "201",
       metadata: {
-        shop: getInfoData({
+        information: getInfoData({
           fields: ["_id", "name", "email"],
           object: newUser,
         }),
-        tokens,
+        // tokens,
       },
     };
   };
@@ -73,29 +73,22 @@ class AccessService {
     });
     if (!holderUser) throw new NotfoundError("Username or password is wrong");
 
+    console.log(holderUser);
     const match = await bcrypt.compare(password, holderUser.password);
 
+    console.log(match);
     if (!match) throw new NotfoundError("Username or password is wrong");
 
-    const publicKey = crypto.randomBytes(64).toString("hex");
-    const privateKey = crypto.randomBytes(64).toString("hex");
-
-    const tokens = await createTokensPair(
-      {
-        UserId: holderUser._id,
-        email,
-      },
-      publicKey,
-      privateKey
-    );
+    const tokens = await createTokensPair({
+      UserId: holderUser._id,
+      email: holderUser.email,
+    });
 
     if (!tokens)
       throw new BadRequestError("Something went wrong! Cant create tokens");
 
     const keyStore = await KeyTokenService.createKeys({
       user: holderUser,
-      publicKey,
-      privateKey,
       refreshToken: tokens.refreshToken,
     });
 
@@ -103,11 +96,14 @@ class AccessService {
       throw new BadRequestError("Error: cant create or update keyStore");
 
     return {
-      shop: getInfoData({
-        fields: ["_id", "name", "email"],
+      information: getInfoData({
+        fields: ["_id", "name", "email", "roles"],
         object: holderUser,
       }),
-      tokens,
+      accessToken: tokens.accessToken,
+      atokenExp: tokens.atokenExp,
+      refreshToken: tokens.refreshToken,
+      rtokenExp: tokens.rtokenExp,
     };
   };
 
@@ -117,12 +113,18 @@ class AccessService {
     return delKey;
   };
 
+  static getMe = async (id) => {
+    const data = await UserModel.findOne({ _id: id }).select("-password");
+    if (!data) throw new BadRequestError("Somethignwentwr");
+    return data;
+  };
+
   static refreshTokenHandle = async (user, refreshToken) => {
     const userId = user.UserId;
     const email = user.email;
     const keyStore = await KeyTokenService.findById(userId);
     if (!keyStore) throw new AuthFailureError("Cant find UID");
-    
+
     if (keyStore.refreshTokenUsed.includes(refreshToken)) {
       await KeyTokenService.removeTokenByUserId(userId);
       throw new ForbiddenError("Something went wrong! Please relogin");
@@ -205,6 +207,12 @@ class AccessService {
     );
 
     return user;
+  };
+
+  static GetUserById = async (id) => {
+    const data = await UserModel.findOne({ _id: id });
+    if (!data) throw new BadRequestError("Swr");
+    return data;
   };
 }
 

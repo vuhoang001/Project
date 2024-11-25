@@ -40,6 +40,14 @@ class AccessController {
     }).send(res);
   };
 
+  getMe = async (req, res, next) => {
+    const id = req.user.UserId;
+    new SuccessResponse({
+      message: "Get me",
+      metadata: await AccessService.getMe(id),
+    }).send(res);
+  };
+
   resetPassword = async (req, res, next) => {
     const resetToken = req.query.token;
     const email = req.query.email;

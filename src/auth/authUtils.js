@@ -1,9 +1,10 @@
 const jwt = require("jsonwebtoken");
 
-const { AuthFailureError, BadRequestError } = require("../core/error.response");
+const { AuthFailureError } = require("../core/error.response");
+const userModel = require("../models/users.model");
+// const UserServices = require("../services/access.service");
 
 const AsyncHandle = require("../helpers/AsyncHandle");
-const keyTokenModel = require("../models/keyToken.model");
 
 const HEADER = {
   API_KEY: "x-api-key",
@@ -12,16 +13,27 @@ const HEADER = {
   REFRESHTOKEN: "x-rtoken-id",
 };
 
-const createTokensPair = async (payload, publicKey, privateKey) => {
+const createTokensPair = async (payload) => {
   try {
-    const accessToken = jwt.sign(payload, publicKey, {
+    const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
       expiresIn: "2 days",
     });
 
-    const refreshToken = jwt.sign(payload, privateKey, {
+    const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {
       expiresIn: "7 days",
     });
-    return { accessToken, refreshToken };
+
+    const rtokenTime = jwt.verify(
+      refreshToken,
+      process.env.REFRESH_TOKEN_SECRET
+    );
+    const atokenTime = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
+    return {
+      accessToken,
+      refreshToken,
+      rtokenExp: rtokenTime.exp,
+      atokenExp: atokenTime.exp,
+    };
   } catch (err) {
     return err;
   }
@@ -33,6 +45,7 @@ const authentication = AsyncHandle(async (req, res, next) => {
   let accessToken;
   if (Bearer) accessToken = Bearer.split(" ")[1];
 
+  console.log(Bearer)
   if (!refreshToken && !accessToken)
     throw new AuthFailureError("Invalid tokenn");
   if (refreshToken) {
@@ -40,7 +53,9 @@ const authentication = AsyncHandle(async (req, res, next) => {
       refreshToken,
       process.env.REFRESH_TOKEN_SECRET
     );
-    const holderAccount = await getAccountById(decodedUser.UserId);
+    // const holderAccount = await getAccountById(decodedUser.UserId);
+
+    const holderAccount = await userModel.findOne({ _id: decodedUser.UserId });
     if (!holderAccount) throw new AuthFailureError("Invalid refresh token!");
     req.user = decodedUser;
     req.refreshToken = refreshToken;
@@ -51,7 +66,10 @@ const authentication = AsyncHandle(async (req, res, next) => {
       accessToken,
       process.env.ACCESS_TOKEN_SECRET
     );
-    const holderAccount = await getAccountById(decodedUser.UserId);
+
+
+    // const holderAccount = await UserServices.GetUserById(decodedUser.UserId);
+    const holderAccount = await userModel.findOne({ _id: decodedUser.UserId });
     if (!holderAccount) throw new AuthFailureError("Invalid access token!");
     req.user = decodedUser;
   }
