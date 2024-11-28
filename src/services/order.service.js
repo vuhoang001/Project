@@ -4,7 +4,6 @@ const { BadRequestError } = require("../core/error.response");
 
 class OrderService {
   Checkout = async (idUser) => {
-    console.log("Toi ten la hoang");
     const cart = await cartModel.findOne({ user: idUser });
     if (!cart || cart.products.length === 0) {
       throw new BadRequestError("Something went wrong");
@@ -45,7 +44,7 @@ class OrderService {
       })
       .populate({
         path: "products.book",
-        select: "bookName imageBook price",
+        select: "bookName imageBook price discount ",
       });
     if (!data) throw new BadRequestError("Something went wrong");
     return data;

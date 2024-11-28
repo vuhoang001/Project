@@ -57,6 +57,16 @@ const callbackCODType = async (payload) => {
 };
 
 const callbackTranferType = async (dataStr, reqMac) => {
+  dataStr = JSON.parse(dataStr);
+  const embed_data = JSON.parse(dataStr.embed_data);
+  const orderId = embed_data.orderId;
+  const holderOrder = await orderModel.findOne({
+    _id: orderId,
+  });
+  if (holderOrder) {
+    holderOrder.orderStatus = true;
+    await holderOrder.save();
+  }
   // if (dataStr) {
   //   console.log(dataStr.embed_data);
   //   // const holderOrder = await orderModel.findOne({
@@ -73,6 +83,7 @@ const tranferType = async (payload, id, type) => {
   const orderId = payload.orderId;
   const embed_data = {
     redirecturl: "http://localhost:5173/payment-success",
+    orderId: orderId,
   };
   const orderHolder = await orderModel.findOne({
     _id: convertToObjectIdMongose(orderId),
@@ -84,7 +95,6 @@ const tranferType = async (payload, id, type) => {
   const order = {
     app_id: config.app_id,
     app_trans_id: `${moment().format("YYMMDD")}_${transID}`,
-    // app_trans_id: orderId.toString(),
     app_user: id.UserId,
     app_time: Date.now(), // miliseconds
     item: JSON.stringify(items),

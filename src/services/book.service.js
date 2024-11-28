@@ -1,7 +1,11 @@
 const { BadRequestError } = require("../core/error.response");
 const bookModel = require("../models/book.model");
 const { uploadImageFromLocalFiles } = require("../helpers/cloudinary");
-const { pagination, convertUrlBook } = require("../utils/index");
+const {
+  pagination,
+  convertUrlBook,
+  convertToObjectIdMongose,
+} = require("../utils/index");
 
 class BookService {
   CreateBook = async (payload, files) => {
@@ -14,18 +18,20 @@ class BookService {
     return data;
   };
 
-  GetAllBook = async (page, limit, keyword) => {
+  GetAllBook = async (page, limit, keyword, genre) => {
     const { limitNumber, skip } = pagination(page, limit);
-    const query = keyword
-      ? {
-          $or: [
-            { bookName: { $regex: keyword, $options: "i" } },
-            { bookDescription: { $regex: keyword, $options: "i" } },
-            { summary: { $regex: keyword, $options: "i" } },
-          ],
-        }
-      : {};
-    const data = await bookModel
+    let query = {};
+    if (keyword) {
+      query = {
+        $or: [
+          { bookName: { $regex: keyword, $options: "i" } },
+          { bookDescription: { $regex: keyword, $options: "i" } },
+          { summary: { $regex: keyword, $options: "i" } },
+        ],
+      };
+    }
+
+    let data = await bookModel
       .find(query)
       .populate("authorBook")
       .populate("genre")
@@ -33,7 +39,36 @@ class BookService {
       .skip(skip);
     if (!data || data.length === 0)
       throw new BadRequestError("Can't get all books");
+
+    if (genre) {
+      data = data.filter((item) => item.genre.slug === genre);
+    }
     return data;
+  };
+
+  GetDiscountBook = async () => {
+    const holderData = await bookModel.find({ discount: { $gt: 0 } });
+    if (holderData.length == 0) {
+      throw new BadRequestError("no datas");
+    }
+    return holderData;
+  };
+
+  UpdateDiscountBook = async (ids, percent, type) => {
+    let query = {};
+    if (type == "group") {
+      query = { _id: { $in: ids } };
+    }
+    if (type == "genre") {
+      query = { genre: { $in: ids } };
+    }
+
+    const holderData = await bookModel.find(query);
+    if (holderData.length == 0) throw new BadRequestError("no datas");
+
+    const discountUpdate = { $set: { discount: percent } };
+    const updateResult = await bookModel.updateMany(query, discountUpdate);
+    return updateResult;
   };
 
   GetBook = async (slug) => {
@@ -43,7 +78,6 @@ class BookService {
   };
 
   EditBook = async (slug, payload, files = null) => {
-    console.log(payload);
     if (!slug) throw new BadRequestError("Cant edit book");
     const holderBook = await bookModel.findOne({ slug: slug });
     if (!holderBook) throw new BadRequestError("Cant edit book");

@@ -12,12 +12,10 @@ router.post(
   AsyncHandle(BookController.CreateBook)
 );
 router.get("/", AsyncHandle(BookController.GetAllBook));
+router.get("/discount", AsyncHandle(BookController.GetDiscountBook));
+router.post("/discount", AsyncHandle(BookController.UpdateDiscountBook));
 router.get("/:slug", AsyncHandle(BookController.GetBook));
-router.delete(
-  "/:slug",
-
-  AsyncHandle(BookController.Delete)
-);
+router.delete("/:slug", AsyncHandle(BookController.Delete));
 router.patch(
   "/:slug",
   uploadDisk.array("files", 1),

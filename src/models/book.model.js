@@ -42,6 +42,10 @@ const BookSchema = new Schema(
       type: Number,
       default: 0,
     },
+    importPrice: {
+      type: Number,
+      default: 0,
+    },
     releaseTime: {
       type: Date,
       default: Date.now,
@@ -53,6 +57,10 @@ const BookSchema = new Schema(
     rating: {
       type: Number,
       default: 4.5,
+    },
+    discount: {
+      type: Number,
+      default: 0,
     },
     slug: {
       type: String,

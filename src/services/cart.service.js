@@ -34,8 +34,10 @@ class CartService {
 
       if (existingItem) {
         if (a == 1) {
+          console.log(1);
           existingItem.quantity += item.quantity;
         } else {
+          console.log(0);
           existingItem.quantity = item.quantity;
         }
       } else {
@@ -55,20 +57,26 @@ class CartService {
     if (!cart) throw new BadRequestError("Something went wrong");
 
     for (let i = 0; i < cart.products.length; i++) {
-      for (let j = 0; j < ids.length; j++) {
-        if (ids[j].toString() == cart.products[i].book) {
-          cart.products.splice(i, 1);
-          i--;
-          break;
-        }
+      if (cart.products[i].book.toString() == ids.ids) {
+        cart.products.splice(i, 1);
+        i--;
+        break;
       }
     }
+    // for (let i = 0; i < cart.products.length; i++) {
+    //   for (let j = 0; j < ids.length; j++) {
+    //     if (ids[j].toString() == cart.products[i].book) {
+    //       cart.products.splice(i, 1);
+    //       i--;
+    //       break;
+    //     }
+    //   }
+    // }
+
     await cart.save();
 
     return cart;
   };
-
-  AddToCart = async (payload, id) => {};
 }
 
 module.exports = new CartService();

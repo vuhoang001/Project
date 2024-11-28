@@ -13,9 +13,28 @@ class BookController {
   GetAllBook = async (req, res, next) => {
     const { page = 1, limit = 10 } = req.query;
     const { keySearch } = req.query;
+    const genre = req.query.genre;
     new SuccessResponse({
       message: "Get all books",
-      metadata: await bookService.GetAllBook(page, limit, keySearch),
+      metadata: await bookService.GetAllBook(page, limit, keySearch, genre),
+    }).send(res);
+  };
+
+  GetDiscountBook = async (req, res, next) => {
+    console.log("Getdisocuntbook");
+    new SuccessResponse({
+      message: "Get discount success",
+      metadata: await bookService.GetDiscountBook(),
+    }).send(res);
+  };
+
+  UpdateDiscountBook = async (req, res, next) => {
+    const { ids, percent } = req.body;
+    const type = req.query.type;
+
+    new SuccessResponse({
+      message: "Update discount success",
+      metadata: await bookService.UpdateDiscountBook(ids, percent, type),
     }).send(res);
   };
 
