@@ -148,7 +148,7 @@ const codType = async (payload, id) => {
   orderHolder.orderStatus = false;
   orderHolder.paymentMethod = "C";
   orderHolder.addressTo = payload.payload.address;
-  orderHolder.phoneReceive = payload.payload.phone;
+  orderHolder.phoneReceive = payload.payload.phoneReceive;
   orderHolder.totalAmount = payload.payload.totalAmount;
 
   const holderCart = await cartModel.findOne({ user: id.UserId });

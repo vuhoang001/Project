@@ -37,6 +37,7 @@ class BookService {
       .populate("genre")
       .limit(limitNumber)
       .skip(skip);
+
     if (!data || data.length === 0)
       throw new BadRequestError("Can't get all books");
 

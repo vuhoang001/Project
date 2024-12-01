@@ -18,6 +18,14 @@ class OrderController {
     }).send(res);
   };
 
+  GetOrderByUser = async (req, res, next) => {
+    const id = req.user.UserId;
+    new SuccessResponse({
+      message: "GetOrderByUser",
+      metadata: await orderService.GetOrderByUsr(id),
+    }).send(res);
+  };
+
   GetOrders = async (req, res, next) => {
     new SuccessResponse({
       message: "Get orders",

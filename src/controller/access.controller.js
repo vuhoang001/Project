@@ -9,6 +9,13 @@ class AccessController {
     }).send(res);
   };
 
+  UpdateUser = async (req, res, next) => {
+    const user = req.user;
+    new SuccessResponse({
+      message: "update success",
+      metadata: await AccessService.UpdateUser(req.body, user),
+    }).send(res);
+  };
   login = async (req, res, next) => {
     new SuccessResponse({
       message: "Login success!",
@@ -54,6 +61,23 @@ class AccessController {
     new SuccessResponse({
       message: "handleOTP success!",
       metadata: await AccessService.resetPassword(req.body, resetToken, email),
+    }).send(res);
+  };
+
+  changePassword = async (req, res, next) => {
+    const user = req.user;
+    new SuccessResponse({
+      message: "Change password",
+      metadata: await AccessService.changePassword(req.body, user),
+    }).send(res);
+  };
+
+  updateImage = async (req, res, next) => {
+    const user = req.user;
+    const { files } = req;
+    new SuccessResponse({
+      message: "Change image success",
+      metadata: await AccessService.updateImage(files, user),
     }).send(res);
   };
 }

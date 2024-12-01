@@ -9,7 +9,7 @@ const crypto = require("crypto");
 const KeyTokenService = require("../services/keyToken.service");
 const UserService = require("../services/user.service");
 const { createTokensPair } = require("../auth/authUtils");
-const { getInfoData } = require("../utils/index");
+const { getInfoData, convertUrlBook } = require("../utils/index");
 const { sendMail } = require("../config/nodemailer.config");
 const ForgetPasswordModel = require("../models/forgetPassword.model");
 
@@ -73,10 +73,8 @@ class AccessService {
     });
     if (!holderUser) throw new NotfoundError("Username or password is wrong");
 
-    console.log(holderUser);
     const match = await bcrypt.compare(password, holderUser.password);
 
-    console.log(match);
     if (!match) throw new NotfoundError("Username or password is wrong");
 
     const tokens = await createTokensPair({
@@ -213,6 +211,55 @@ class AccessService {
     const data = await UserModel.findOne({ _id: id });
     if (!data) throw new BadRequestError("Swr");
     return data;
+  };
+
+  static UpdateUser = async (payload, user) => {
+    const id = user.UserId;
+    console.log(payload);
+    const updateUser = await UserModel.findOne({ _id: id });
+    if (!updateUser) throw new BadRequestError("Can find user");
+    Object.assign(updateUser, payload);
+    updateUser.roles = "C";
+    const res = await updateUser.save();
+    return res;
+  };
+
+  static changePassword = async (payload, User) => {
+    let { oldPassword, newPassword } = payload;
+    const id = User.UserId;
+
+    const holderUser = await UserModel.findOne({ _id: id });
+    if (!holderUser) throw new BadRequestError("Cant find holderUser");
+
+    const match = await bcrypt.compare(oldPassword, holderUser.password);
+    if (!match)
+      throw new BadRequestError("Nhập sai mật khẩu vui lòng nhập lại !");
+
+    newPassword = await bcrypt.hash(newPassword, 10);
+    if (!newPassword)
+      throw new BadRequestError("Some thing went wrong with bcrypt");
+
+    holderUser.password = newPassword;
+    holderUser.roles = "C";
+
+    await holderUser.save();
+    return 1;
+  };
+
+  static updateImage = async (files, User) => {
+    const id = User.UserId;
+
+    const holderUser = await UserModel.findOne({ _id: id });
+    if (!holderUser) throw new BadRequestError("Can not find holderUser");
+
+    if (!files) throw new BadRequestError("Vui lòng nhập ảnh!");
+
+    holderUser.thumbnail = convertUrlBook(files[0].filename);
+
+    if (!holderUser.thumbnail) throw new BadRequestError("Không lưu được ảnh");
+
+    await holderUser.save();
+    return 1;
   };
 }
 

@@ -11,6 +11,7 @@ const CartSchema = new Schema(
           ref: "Book",
         },
         quantity: Number,
+        price: Number,
       },
     ],
     user: {

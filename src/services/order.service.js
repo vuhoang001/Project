@@ -50,6 +50,25 @@ class OrderService {
     return data;
   };
 
+  GetOrderByUsr = async (idUser) => {
+    const cart = await cartModel.find({ user: idUser });
+    if (!cart) throw new BadRequestError("Cant get cart");
+
+    const data = orderModel
+      .find()
+      .populate({
+        path: "user",
+        select: "-password",
+      })
+      .populate({
+        path: "products.book",
+        select: "bookName imageBook price discount ",
+      });
+
+    if (!data) throw new BadRequestError("Cant get data");
+    return data;
+  };
+
   GetOrders = async () => {
     const data = orderModel
       .find()

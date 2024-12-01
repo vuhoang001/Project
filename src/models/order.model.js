@@ -12,6 +12,7 @@ const OrderSchema = new Schema(
           ref: "Book",
         },
         quantity: Number,
+        price: Number,
       },
     ],
     user: {

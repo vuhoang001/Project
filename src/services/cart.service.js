@@ -31,19 +31,19 @@ class CartService {
       const existingItem = cart.products.find((product) => {
         return product.book.toString() == item.productId;
       });
-
       if (existingItem) {
+        existingItem.price = item.price;
+
         if (a == 1) {
-          console.log(1);
           existingItem.quantity += item.quantity;
         } else {
-          console.log(0);
           existingItem.quantity = item.quantity;
         }
       } else {
         cart.products.push({
           book: item.productId,
           quantity: item.quantity,
+          price: item.price,
         });
       }
     }
