@@ -9,5 +9,6 @@ router.post("/", AsyncHandle(OrderController.checkout));
 router.get("/", AsyncHandle(OrderController.GetOrder));
 router.get("/all", AsyncHandle(OrderController.GetOrders));
 router.get("/gbu", AsyncHandle(OrderController.GetOrderByUser));
+router.patch("/", AsyncHandle(OrderController.Update));
 
 module.exports = router;

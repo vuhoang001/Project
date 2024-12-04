@@ -3,6 +3,14 @@ const cartModel = require("../models/cart.model");
 const { BadRequestError } = require("../core/error.response");
 
 class OrderService {
+  Update = async (payload) => {
+    console.log(payload);
+    const orderHolder = await orderModel.findOne({ _id: payload });
+    if (!orderHolder) throw new BadRequestError("Can not get Order");
+    Object.assign(orderHolder, payload);
+    await orderHolder.save();
+    return 1;
+  };
   Checkout = async (idUser) => {
     const cart = await cartModel.findOne({ user: idUser });
     if (!cart || cart.products.length === 0) {
@@ -37,7 +45,10 @@ class OrderService {
     if (!cart) throw new BadRequestError("Something went wrong");
 
     const data = orderModel
-      .findOne({ orderStatus: false, cart: cart._id.toString() })
+      .findOne({
+        orderStatus: "F",
+        cart: cart._id.toString(),
+      })
       .populate({
         path: "user",
         select: "-password",

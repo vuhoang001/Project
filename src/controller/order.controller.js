@@ -2,6 +2,12 @@ const { SuccessResponse } = require("../core/success.response");
 const orderService = require("../services/order.service");
 
 class OrderController {
+  Update = async (req, res, next) => {
+    new SuccessResponse({
+      message: "Update order",
+      metadata: await orderService.Update(req.body),
+    }).send(res);
+  };
   checkout = async (req, res, next) => {
     const id = req.user.UserId;
     new SuccessResponse({

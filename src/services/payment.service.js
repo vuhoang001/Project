@@ -124,7 +124,7 @@ const tranferType = async (payload, id, type) => {
 
   const result = await axios.post(config.endpoint, null, { params: order });
 
-  orderHolder.orderStatus = false;
+  orderHolder.orderStatus = "F";
   orderHolder.paymentMethod = "T";
   orderHolder.addressTo = payload.payload.address;
   orderHolder.phoneReceive = payload.payload.phoneReceive;
@@ -145,7 +145,7 @@ const codType = async (payload, id) => {
     _id: convertToObjectIdMongose(orderId),
   });
 
-  orderHolder.orderStatus = false;
+  orderHolder.orderStatus = "F";
   orderHolder.paymentMethod = "C";
   orderHolder.addressTo = payload.payload.address;
   orderHolder.phoneReceive = payload.payload.phoneReceive;

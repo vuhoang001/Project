@@ -24,12 +24,13 @@ const OrderSchema = new Schema(
       ref: "Cart",
     },
     orderStatus: {
-      type: Boolean,
-      default: false,
+      type: String,
+      enum: ["T", "F", "P"],
+      default: "F",
     },
     paymentMethod: {
       type: String,
-      enum: ["T", "C"],
+      enum: ["T", "C", "P"],
     },
     addressTo: {
       type: String,
