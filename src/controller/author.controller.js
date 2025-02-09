@@ -3,9 +3,10 @@ const { SuccessResponse } = require("../core/success.response");
 class AuthorController {
   CreateAuthor = async (req, res, next) => {
     const { files } = req;
+    const items = req.body.items;
     new SuccessResponse({
       message: "Create author success",
-      metadata: await authorService.CreateAuthor(req.body, files),
+      metadata: await authorService.CreateAuthor(items, files),
     }).send(res);
   };
 
@@ -19,9 +20,6 @@ class AuthorController {
 
   GetAllAuthors = async (req, res, next) => {
     const { page = 1, limit = 100 } = req.query;
-    console.log(123);
-    console.log("page", page);
-    console.log("limit", limit);
     new SuccessResponse({
       message: "Get all authors",
       metadata: await authorService.GetAllAuthors(page, limit),
@@ -43,15 +41,6 @@ class AuthorController {
     new SuccessResponse({
       message: "Delete author success",
       metadata: await authorService.DeleteAuthor(slug),
-    }).send(res);
-  };
-
-  Upload = async (req, res, next) => {
-    const { files } = req;
-    console.log(req);
-    new SuccessResponse({
-      message: "Upload image",
-      metadata: await authorService.Upload(files),
     }).send(res);
   };
 }

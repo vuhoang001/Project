@@ -13,8 +13,8 @@ class Database {
 
   connect(type = `mongodb`) {
     if (true) {
-      mongoose.set("debug", true);
-      mongoose.set("debug", { color: true });
+      // mongoose.set("debug", true);
+      // mongoose.set("debug", { color: true });
     }
 
     mongoose

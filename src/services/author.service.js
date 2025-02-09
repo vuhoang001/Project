@@ -1,18 +1,18 @@
 const authorModel = require("../models/author.model");
 const { BadRequestError } = require("../core/error.response");
 const { pagination, convertUrlBook } = require("../utils/index");
-const { uploadImageFromLocalFiles } = require("../helpers/cloudinary");
 
 class AuthorService {
   CreateAuthor = async (payload, files) => {
-    const { authorName, bio } = payload;
+    const { authorName, bio } = JSON.parse(payload);
+    let img = ""
     if (files) {
-      payload.authorImage = convertUrlBook(files[0].filename);
+      img = convertUrlBook(files[0].filename);
     }
     const data = await authorModel.create({
       authorName: authorName,
       bio: bio,
-      authorImage: payload.authorImage,
+      authorImage: img,
     });
 
     if (!data) throw new BadRequestError("Cant create author");

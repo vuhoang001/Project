@@ -6,7 +6,6 @@ async function resizeImage(req, res, next) {
   }
 
   try {
-    // Dùng sharp để resize ảnh
     await sharp(req.file.path)
       .resize(250, 250) // Resize ảnh về kích thước 250x250 px
       .toFile(`./uploads/resized-${req.file.filename}`, (err, info) => {

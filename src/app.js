@@ -5,7 +5,7 @@ const morgan = require("morgan");
 const helmet = require("helmet");
 const compression = require("compression");
 const cors = require("cors");
-const { setupSwagger } = require("./config/swagger");
+const setupSwagger = require("./config/swagger");
 const path = require("path");
 
 app.use(cors());
@@ -19,8 +19,9 @@ app.use(
   })
 );
 
-//Set up swagger
 setupSwagger(app);
+
+//Set up swagger
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
