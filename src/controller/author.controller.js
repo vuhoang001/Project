@@ -29,10 +29,9 @@ class AuthorController {
   EditAuthor = async (req, res, next) => {
     const { files } = req;
     const slug = req.params.slug;
-    console.log(slug);
     new SuccessResponse({
       message: "Edit author success",
-      metadata: await authorService.EditAuthor(slug, req.body, files),
+      metadata: await authorService.EditAuthor(slug, req.body.items, files),
     }).send(res);
   };
 

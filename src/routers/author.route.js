@@ -56,9 +56,9 @@ router.post(
  * @swagger
  *  /v1/api/author:
  *    get:
- *      summary: Get all author
+ *      summary: Get all authors
  *      tags: [Author]
- *      parameters: 
+ *      parameters:
  *        - $ref: '#/components/parameters/Skip'
  *        - $ref: '#/components/parameters/Limit'
  *        - $ref: '#/components/parameters/Search'
@@ -67,13 +67,62 @@ router.post(
  *          description: success
  */
 router.get("/", AsyncHandle(authorController.GetAllAuthors));
+
+/**
+ * @swagger
+ *  /v1/api/author/{slug}:
+ *    get:
+ *      summary: Get by slug
+ *      tags: [Author]
+ *      parameters:
+ *        - $ref: '#/components/parameters/SlugParam'
+ *      responses:
+ *        200:
+ *          description: success
+ */
 router.get("/:slug", AsyncHandle(authorController.GetAuthor));
+
+/**
+ * @swagger
+ *  /v1/api/author/{slug}:
+ *    patch:
+ *      summary: Update author
+ *      tags: [Author]
+ *      security:
+ *        - bearerAuth: []
+ *      parameters:
+ *        - $ref: '#/components/parameters/SlugParam'
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          multipart/form-data:
+ *            schema:
+ *              $ref: '#/components/schemas/AuthorModel'
+ *      responses:
+ *        200:
+ *          description: success
+ */
 router.patch(
   "/:slug",
   authentication,
   uploadDisk.array("files", 1),
   AsyncHandle(authorController.EditAuthor)
 );
+
+/**
+ * @swagger
+ *  /v1/api/author/{slug}:
+ *    delete:
+ *      summary: Delete author
+ *      tags: [Author]
+ *      security:
+ *        - bearerAuth: []
+ *      parameters:
+ *        - $ref: '#/components/parameters/SlugParam'
+ *      responses:
+ *        200:
+ *          description: success
+ */
 router.delete(
   "/:slug",
   authentication,

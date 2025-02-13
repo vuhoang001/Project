@@ -5,7 +5,7 @@ const { pagination, convertUrlBook } = require("../utils/index");
 class AuthorService {
   CreateAuthor = async (payload, files) => {
     const { authorName, bio } = JSON.parse(payload);
-    let img = ""
+    let img = "";
     if (files) {
       img = convertUrlBook(files[0].filename);
     }
@@ -39,6 +39,7 @@ class AuthorService {
     const holderAuthor = await authorModel.findOne({ slug: slug });
     if (!holderAuthor) throw new BadRequestError("Cant edit author 2");
 
+    payload = JSON.parse(payload);
     if (files && files.length > 0) {
       payload.authorImage = convertUrlBook(files[0].filename);
     }

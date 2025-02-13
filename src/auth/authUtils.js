@@ -45,7 +45,6 @@ const authentication = AsyncHandle(async (req, res, next) => {
   let accessToken;
   if (Bearer) accessToken = Bearer.split(" ")[1];
 
-  console.log(Bearer)
   if (!refreshToken && !accessToken)
     throw new AuthFailureError("Invalid tokenn");
   if (refreshToken) {
@@ -53,7 +52,6 @@ const authentication = AsyncHandle(async (req, res, next) => {
       refreshToken,
       process.env.REFRESH_TOKEN_SECRET
     );
-    // const holderAccount = await getAccountById(decodedUser.UserId);
 
     const holderAccount = await userModel.findOne({ _id: decodedUser.UserId });
     if (!holderAccount) throw new AuthFailureError("Invalid refresh token!");
@@ -67,8 +65,6 @@ const authentication = AsyncHandle(async (req, res, next) => {
       process.env.ACCESS_TOKEN_SECRET
     );
 
-
-    // const holderAccount = await UserServices.GetUserById(decodedUser.UserId);
     const holderAccount = await userModel.findOne({ _id: decodedUser.UserId });
     if (!holderAccount) throw new AuthFailureError("Invalid access token!");
     req.user = decodedUser;

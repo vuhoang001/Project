@@ -4,11 +4,10 @@ const AsyncHandle = require("../helpers/AsyncHandle");
 const OrderController = require("../controller/order.controller");
 const { authentication } = require("../auth/authUtils");
 
-router.use(authentication);
-router.post("/", AsyncHandle(OrderController.checkout));
-router.get("/", AsyncHandle(OrderController.GetOrder));
-router.get("/all", AsyncHandle(OrderController.GetOrders));
-router.get("/gbu", AsyncHandle(OrderController.GetOrderByUser));
-router.patch("/", AsyncHandle(OrderController.Update));
+router.post("/", authentication, AsyncHandle(OrderController.checkout));
+router.get("/", authentication, AsyncHandle(OrderController.GetOrder));
+router.get("/all", authentication, AsyncHandle(OrderController.GetOrders));
+router.get("/gbu", authentication, AsyncHandle(OrderController.GetOrderByUser));
+router.patch("/", authentication, AsyncHandle(OrderController.Update));
 
 module.exports = router;
