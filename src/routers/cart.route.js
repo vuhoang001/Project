@@ -79,10 +79,6 @@ router.get("/", authentication, AsyncHandle(CartController.list));
  *                 metadata:
  *                   type: object
  *                   description: Metadata with added cart information
- *       '400':
- *         description: Bad Request, invalid payload or parameters
- *       '500':
- *         description: Internal Server Error
  */
 router.post("/add/:a", authentication, AsyncHandle(CartController.AddProducts));
 
@@ -95,7 +91,19 @@ router.post("/add/:a", authentication, AsyncHandle(CartController.AddProducts));
  *      security:
  *        - bearerAuth: []
  *      requestBody:
- *
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                ids:
+ *                  type: array
+ *                  items:
+ *                    type: string
+ *      responses:
+ *        200:
+ *            description: success
  */
 router.post(
   "/remove",

@@ -63,16 +63,6 @@ class CartService {
         break;
       }
     }
-    // for (let i = 0; i < cart.products.length; i++) {
-    //   for (let j = 0; j < ids.length; j++) {
-    //     if (ids[j].toString() == cart.products[i].book) {
-    //       cart.products.splice(i, 1);
-    //       i--;
-    //       break;
-    //     }
-    //   }
-    // }
-
     await cart.save();
 
     return cart;
