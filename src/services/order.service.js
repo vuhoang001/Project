@@ -11,6 +11,7 @@ class OrderService {
     await orderHolder.save();
     return 1;
   };
+
   Checkout = async (idUser) => {
     const cart = await cartModel.findOne({ user: idUser });
     if (!cart || cart.products.length === 0) {
@@ -73,7 +74,7 @@ class OrderService {
       })
       .populate({
         path: "products.book",
-        select: "bookName imageBook price discount ",
+        select: "bookName imageBook price discount",
       });
 
     if (!data) throw new BadRequestError("Cant get data");

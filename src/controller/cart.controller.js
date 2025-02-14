@@ -13,7 +13,7 @@ class CartController {
   AddProducts = async (req, res, next) => {
     const id = req.user.UserId;
     const payload = req.body;
-    const a = req.query.a;
+    const { a } = req.query;
     new SuccessResponse({
       message: "Add to cart",
       metadata: await cartService.AddProduct(payload, id, a),

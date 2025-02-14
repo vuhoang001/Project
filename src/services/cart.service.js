@@ -33,7 +33,6 @@ class CartService {
       });
       if (existingItem) {
         existingItem.price = item.price;
-
         if (a == 1) {
           existingItem.quantity += item.quantity;
         } else {

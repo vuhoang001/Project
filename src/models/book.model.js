@@ -25,6 +25,10 @@ const BookSchema = new Schema(
       type: String,
       default: "",
     },
+    translater: {
+      type: String,
+      default: "unknow",
+    },
     summary: {
       type: String,
       default: "",

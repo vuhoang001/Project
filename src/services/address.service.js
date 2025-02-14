@@ -3,22 +3,25 @@ const axios = require("axios");
 
 class AddressService {
   GetCites = async () => {
-    const response = await axios.get("https://vapi.vnappmob.com/api/province");
-    return response.data.results;
+    const { data } = await axios.get(
+      "https://open.oapi.vn/location/provinces?page=0&size=65"
+    );
+
+    return data.data;
   };
 
   GetDistrict = async (code) => {
-    const response = await axios.get(
-      `https://vapi.vnappmob.com/api/province/district/${code}`
+    const { data } = await axios.get(
+      `https://open.oapi.vn/location/districts/${code}?page=0&size=50`
     );
-    return response.data.results;
+    return data.data;
   };
 
   GetWard = async (code) => {
-    const response = await axios.get(
-      `https://vapi.vnappmob.com/api/province/ward/${code}`
+    const { data } = await axios.get(
+      `https://open.oapi.vn/location/wards/${code}?page=0&size=200`
     );
-    return response.data.results;
+    return data.data;
   };
 }
 

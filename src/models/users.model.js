@@ -44,6 +44,18 @@ const UserSchema = new Schema(
       type: String,
       default: "C",
     },
+    province: {
+      type: String,
+      default: "",
+    },
+    district: {
+      type: String,
+      default: "",
+    },
+    ward: {
+      type: String,
+      default: "",
+    },
   },
   {
     timestamps: true,

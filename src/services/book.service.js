@@ -10,7 +10,7 @@ const {
 class BookService {
   CreateBook = async (payload, files) => {
     if (files) {
-      payload.imageBook = convertUrlBook(files[0].filename);
+      payload.imageBook = convertUrlBook(files[0]?.filename);
     }
     const data = await bookModel.create(payload);
     if (!data) throw new BadRequestError("Cant create book");

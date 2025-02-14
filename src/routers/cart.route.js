@@ -27,7 +27,7 @@ router.get("/", authentication, AsyncHandle(CartController.list));
 
 /**
  * @swagger
- * /v1/api/cart/add/{a}:
+ * /v1/api/cart/add:
  *   post:
  *     summary: Add products to a user's cart
  *     tags: [Cart]
@@ -37,7 +37,7 @@ router.get("/", authentication, AsyncHandle(CartController.list));
  *     operationId: addProductToCart
  *     parameters:
  *       - name: a
- *         in: params
+ *         in: query
  *         description: The action type for the cart (1 to increment quantity, other values to set quantity).
  *         required: true
  *         schema:
@@ -80,7 +80,7 @@ router.get("/", authentication, AsyncHandle(CartController.list));
  *                   type: object
  *                   description: Metadata with added cart information
  */
-router.post("/add/:a", authentication, AsyncHandle(CartController.AddProducts));
+router.post("/add", authentication, AsyncHandle(CartController.AddProducts));
 
 /**
  * @swagger
