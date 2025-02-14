@@ -32,6 +32,8 @@ const { authentication } = require("../auth/authUtils");
  *    post:
  *      summary: Create genre
  *      tags: [Genre]
+ *      security: 
+ *        - bearerAuth: []
  *      requestBody:
  *        required: true
  *        content:

@@ -27,14 +27,76 @@ router.get("/", authentication, AsyncHandle(CartController.list));
 
 /**
  * @swagger
- *  /v1/api/cart/add:
+ * /v1/api/cart/add/{a}:
+ *   post:
+ *     summary: Add products to a user's cart
+ *     tags: [Cart]
+ *     security:
+ *      - bearerAuth: []
+ *     description: Adds one or more products to the cart, either updating existing products' quantities or adding new products.
+ *     operationId: addProductToCart
+ *     parameters:
+ *       - name: a
+ *         in: params
+ *         description: The action type for the cart (1 to increment quantity, other values to set quantity).
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *     requestBody:
+ *       description: List of products to be added to the cart.
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: array
+ *             items:
+ *               type: object
+ *               properties:
+ *                 productId:
+ *                   type: string
+ *                   description: The ID of the product.
+ *                   example: "6745493cd86783fc273ed579"
+ *                 quantity:
+ *                   type: integer
+ *                   description: The quantity of the product to add.
+ *                   example: 2
+ *                 price:
+ *                   type: number
+ *                   description: The price of the product.
+ *                   example: 29.99
+ *     responses:
+ *       '200':
+ *         description: Success, product(s) added to the cart
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Add to cart
+ *                 metadata:
+ *                   type: object
+ *                   description: Metadata with added cart information
+ *       '400':
+ *         description: Bad Request, invalid payload or parameters
+ *       '500':
+ *         description: Internal Server Error
+ */
+router.post("/add/:a", authentication, AsyncHandle(CartController.AddProducts));
+
+/**
+ * @swagger
+ *  /v1/api/cart/remove:
  *    post:
- *      summary: Add to cart
+ *      summary: Remove product from cart
  *      tags: [Cart]
  *      security:
  *        - bearerAuth: []
+ *      requestBody:
+ *
  */
-router.post("/add", authentication, AsyncHandle(CartController.AddProducts));
 router.post(
   "/remove",
   authentication,
